@@ -9,11 +9,23 @@
 	class Product extends Model {
 
 		
-		public static function listALL(){
+		public static function listALL()
+		{
 
 			$sql = new Sql();
 
 			return $sql->select("SELECT * FROM tb_products ORDER BY desproduct");
+		}
+
+		public static function checkList($list)
+		{
+			foreach ($list as &$row) {
+				
+				$p = new Product();
+				$p->setData($row);
+				$row = $p->getValues();
+			}
+			return $list;
 		}
 
 		public function save()
@@ -62,28 +74,26 @@
 
 		public function checkPhoto()
 		{
-			if(file_exists(
-				$_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.
-				"res".DIRECTORY_SEPARATOR.
-				"site".DIRECTORY_SEPARATOR.
-				"img".DIRECTORY_SEPARATOR.
-				"products".DIRECTORY_SEPARATOR.
-				$this->getidproduct().".jpg"				
-			)){
-				$url = "/res/site/img/products/" .$this->getidproduct() .".jpg";
-			}else{
-
+			if (file_exists(
+				$_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 
+				"res" . DIRECTORY_SEPARATOR . 
+				"site" . DIRECTORY_SEPARATOR . 
+				"img" . DIRECTORY_SEPARATOR . 
+				"products" . DIRECTORY_SEPARATOR . 
+				$this->getidproduct() . ".jpg"
+				)) {
+				$url = "/res/site/img/products/" . $this->getidproduct() . ".jpg";
+			} else {
 				$url = "/res/site/img/product.jpg";
 			}
-
-			$this->setdesphoto($url);
-
+			return $this->setdesphoto($url);
 		}
 
 		public function getValues()
 		{
 
 			$this->checkPhoto();
+			
 			$values = parent::getValues();
 
 
