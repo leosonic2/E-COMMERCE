@@ -9,4 +9,9 @@
 		return str_replace("'", "", $_GET[$key]);
 	}
 
+	function formatPrice($vlprice)
+	{
+	    return number_format($vlprice, 2, ",", ".");
+	}
+
  ?>
