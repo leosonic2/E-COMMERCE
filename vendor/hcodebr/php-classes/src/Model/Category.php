@@ -14,7 +14,7 @@
 			$sql = new Sql();
 
 			return $sql->select("SELECT * FROM tb_categories ORDER BY descategory");
-		}
+		}//Fim do método listALL
 
 		public function save()
 		{
@@ -28,7 +28,7 @@
 			$this->setData($results[0]);
 
 			Category::updateFile();
-		}		
+		}//Fim do método save		
 		
 		public function get($idcategory)
 		{
@@ -40,7 +40,7 @@
 			]);
 
 			$this->setData($results[0]);
-		}
+		}//Fim do método get
 
 		public function delete()
 		{
@@ -51,7 +51,7 @@
 			]);
 
 			Category::updateFile();
-		}
+		}//Fim do método delete
 
 		public static function updateFile()
 		{
@@ -64,8 +64,60 @@
 			}
 
 			file_put_contents($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR."categories-menu.html", implode('', $html));
+		}//Fim do método updateFile
 
-		}
+		public function getProducts($related = true)
+		{
+			$sql = new Sql();
+
+			if($related == true){
+
+				return $sql->select("
+					SELECT * FROM tb_products WHERE idproduct IN(
+						SELECT a.idproduct
+						FROM  tb_products a
+						INNER JOIN tb_categoriesproducts b ON a.idproduct = b.idproduct
+						WHERE b.idcategory = :idcategory
+					);
+				",[
+					":idcategory"=>$this->getidcategory()
+				]);
+			}else{
+
+				return $sql->select("
+					SELECT * FROM tb_products WHERE idproduct NOT IN(
+						SELECT a.idproduct
+						FROM  tb_products a
+						INNER JOIN tb_categoriesproducts b ON a.idproduct = b.idproduct
+						WHERE b.idcategory = :idcategory
+					);
+				",[
+					":idcategory"=>$this->getidcategory()
+				]);
+			}
+		}//Fim do método getProducts
+
+		public function addProduct($product){
+
+			$sql = new Sql();
+
+			$sql->query("INSERT INTO tb_categoriesproducts(idcategory,idproduct) VALUES(:idcategory,:idproduct)",[
+				':idcategory'=>$this->getidcategory(),
+				':idproduct'=>$product->getidproduct()
+			]);
+
+		}//Fim do método addProduct
+
+		public function removeProduct($product){
+
+			$sql = new Sql();
+
+			$sql->query("DELETE FROM tb_categoriesproducts WHERE idcategory = :idcategory AND idproduct = :idproduct",[
+				':idcategory'=>$this->getidcategory(),
+				':idproduct'=>$product->getidproduct()
+			]);
+
+		}//Fim do método removeProduct
 	}
 
  ?>
