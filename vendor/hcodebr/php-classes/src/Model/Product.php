@@ -15,7 +15,8 @@
 			$sql = new Sql();
 
 			return $sql->select("SELECT * FROM tb_products ORDER BY desproduct");
-		}
+		
+		}// fim do método listALL
 
 		public static function checkList($list)
 		{
@@ -26,7 +27,8 @@
 				$row = $p->getValues();
 			}
 			return $list;
-		}
+		
+		}// fim do método checkList
 
 		public function save()
 		{
@@ -44,9 +46,8 @@
 			));
 			
 			$this->setData($results[0]);
-
 			
-		}		
+		}// Fim do método save		
 		
 		public function get($idproduct)
 		{
@@ -58,7 +59,8 @@
 			]);
 
 			$this->setData($results[0]);
-		}
+		
+		}//fim do método get
 
 		public function delete()
 		{
@@ -69,7 +71,7 @@
 			]);
 
 			
-		}
+		}//fim do método delete()
 
 
 		public function checkPhoto()
@@ -87,7 +89,8 @@
 				$url = "/res/site/img/product.jpg";
 			}
 			return $this->setdesphoto($url);
-		}
+		
+		}// Fim do método checkPhoto
 
 		public function getValues()
 		{
@@ -98,7 +101,7 @@
 
 
 			return $values;
-		}
+		}// Fim do método getValues
 
 		public function setPhoto($file)
 		{
@@ -123,7 +126,7 @@
 				$image = imagecreatefrompng($file["tmp_name"]);
 				break;
 
-			}
+			}//Fim do método setPhoto
 
 			$destino = $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.
 				"res".DIRECTORY_SEPARATOR.
@@ -136,7 +139,29 @@
 
 			$this->checkPhoto();
 
-		}
+		}// fim do método setPhoto
+
+		public function getFromURL($desurl)
+		{
+			$sql = new Sql();
+
+			$rows =  $sql->select("SELECT * FROM tb_products WHERE desurl = :desurl LIMIT 1",[
+				':desurl'=>$desurl,
+			]);
+
+			$this->setData($rows[0]);
+		
+		}// fim do método getFromURL
+
+		public function getCategories()
+		{
+			$sql = new Sql();
+			return $sql->select("
+				SELECT * FROM tb_categories a INNER JOIN tb_categoriesproducts b ON a.idcategory = b.idcategory WHERE b.idproduct = :idproduct
+			", [
+				':idproduct'=>$this->getidproduct()
+			]);
+		}//fim do método getCategories
 
 	}
 
