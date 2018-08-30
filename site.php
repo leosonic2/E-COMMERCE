@@ -2,6 +2,7 @@
 	
 	use \Hcode\Model\User;
 	use \Hcode\Model\Category;
+	use \Hcode\Model\Cart;
 	use \Hcode\Model\Product;
 	use \Hcode\Page;
 	use \Hcode\PageAdmin;
@@ -60,6 +61,15 @@
 			'categories'=>$product->getCategories()
 		]);
 		
+	});
+
+	$app->get("/cart",function()
+	{
+		$cart = Cart::getFromSession();
+
+		$page = new Page();
+
+		$page->setTpl("cart");
 	});
 
 ?>
